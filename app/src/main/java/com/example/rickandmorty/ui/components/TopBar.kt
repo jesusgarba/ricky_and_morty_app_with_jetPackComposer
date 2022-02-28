@@ -35,7 +35,7 @@ fun TopBar(
             )
         },
 
-        actions = {
+        navigationIcon = {
             IconButton(onClick = {
                 scope.launch {
                     scaffoldState.drawerState.open()
@@ -45,7 +45,7 @@ fun TopBar(
 
             }
         },
-        navigationIcon = {
+        actions = {
             Box(
                 Modifier
                     .width(40.dp)

@@ -15,6 +15,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -22,10 +23,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -47,10 +50,11 @@ fun ListScreen(
     navController: NavController,
     viewModel: ListScreenViewModel = hiltViewModel()
 ) {
-    val scaffoldState = rememberScaffoldState(drawerState = rememberDrawerState(initialValue = DrawerValue.Closed ))
+    val scaffoldState =
+        rememberScaffoldState(drawerState = rememberDrawerState(initialValue = DrawerValue.Closed))
     val scope = rememberCoroutineScope()
     val charactersList by viewModel.getCharacters().observeAsState(initial = emptyList())
-    val list = listOf<String>("Option 1", "Option 2", "Option 3", "Option 4" )
+    val list = listOf<String>("Option 1", "Option 2", "Option 3", "Option 4")
     ListViewCharacters(navController, scaffoldState, scope, charactersList, list)
 
 }
@@ -68,10 +72,13 @@ fun ListViewCharacters(
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = { TopBar(scope, scaffoldState ) },
-        drawerContent = {Drawer(scope, scaffoldState , navController , items = list)},
-        drawerGesturesEnabled = true
-        )
+        topBar = { TopBar(scope, scaffoldState) },
+        drawerContent = {
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                Drawer(scope, scaffoldState, navController, items = list)
+            }
+        }
+    )
     {
         LazyColumn {
             items(characters) { character ->
@@ -134,11 +141,12 @@ fun MessageRow(character: Character) {
 @Preview
 @Composable
 fun ListViewPrev() {
-    val scaffoldState = rememberScaffoldState(drawerState = rememberDrawerState(initialValue = DrawerValue.Closed ))
+    val scaffoldState =
+        rememberScaffoldState(drawerState = rememberDrawerState(initialValue = DrawerValue.Closed))
     val scope = rememberCoroutineScope()
-    val list = listOf<String>("Option 1", "Option 2", "Option 3", "Option 4" )
+    val list = listOf<String>("Option 1", "Option 2", "Option 3", "Option 4")
     ListViewCharacters(
-        navController = rememberNavController(), scaffoldState , scope, characters = arrayListOf(
+        navController = rememberNavController(), scaffoldState, scope, characters = arrayListOf(
             Character(
                 1,
                 "Rick Sanchez",
